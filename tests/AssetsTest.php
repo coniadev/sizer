@@ -2,22 +2,17 @@
 
 declare(strict_types=1);
 
-use Conia\Sizer\Assets\Assets;
-use Conia\Sizer\Assets\CachedImage;
-use Conia\Sizer\Assets\Image;
+use Conia\Sizer\Assets;
+use Conia\Sizer\CachedImage;
 use Conia\Sizer\Exception\RuntimeException;
 use Conia\Sizer\Exception\ValueError;
-use Conia\Sizer\Routing\Router;
-use Conia\Sizer\Tests\Setup\C;
-use Conia\Sizer\Tests\Setup\TestCase;
-
-uses(TestCase::class);
-
+use Conia\Sizer\Image;
 
 beforeEach(function () {
-    $assets = C::root() . C::DS . 'public' . C::DS . 'assets';
-    $cache = C::root() . C::DS . 'public' . C::DS . 'cache' . C::DS . 'assets';
-    $cachesub = $cache . C::DS . 'sub';
+    $root = __DIR__ . '/Fixtures';
+    $assets = $root . '/assets';
+    $cache = $root . '/cache/assets';
+    $cachesub = $cache . '/sub';
 
     if (is_dir($cachesub)) {
         array_map('unlink', glob("{$cachesub}/*.*"));
@@ -25,11 +20,11 @@ beforeEach(function () {
     }
 
     $this->paths = ['assets' => $assets, 'cache' => $cache];
-    $this->landscape = $assets . C::DS . 'landscape.png';
-    $this->portrait = $assets . C::DS . 'sub' . C::DS . 'portrait.png';
-    $this->square = $assets . C::DS . 'square.png';
+    $this->landscape = $assets . '/landscape.png';
+    $this->portrait = $assets . '/sub/portrait.png';
+    $this->square = $assets . '/square.png';
     $this->relativeSquare = 'square.png';
-    $this->cached = $cache . C::DS . 'cached.jpg';
+    $this->cached = $cache . '/cached.jpg';
 });
 
 
@@ -63,13 +58,6 @@ test('Image does not exist', function () {
 })->throws(RuntimeException::class, 'does not exist');
 
 
-test('Initialized without Router', function () {
-    $assets = new Assets($this->paths['assets'], $this->paths['cache']);
-    $image = $assets->image($this->square);
-    $image->url(false);
-})->throws(RuntimeException::class, 'initialized without router');
-
-
 test('Resize to width', function () {
     $assets = new Assets($this->paths['assets'], $this->paths['cache']);
 
@@ -81,7 +69,7 @@ test('Resize to width', function () {
     expect($assetImage)->toBeInstanceOf(Image::class);
     expect(str_ends_with(
         $path,
-        'assets' . C::DS . 'landscape-w200b.png'
+        'assets/landscape-w200b.png'
     ))->toBe(true);
     expect(is_file($path))->toBe(true);
     expect(imagesx($image->get()))->toBe(200);
@@ -102,7 +90,7 @@ test('Resize to height', function () {
 
     expect(str_ends_with(
         $path,
-        'assets' . C::DS . 'landscape-h200b.png'
+        'assets/landscape-h200b.png'
     ))->toBe(true);
     expect(is_file($path))->toBe(true);
     expect(imagesy($image->get()))->toBe(200);
@@ -123,7 +111,7 @@ test('Resize portrait to bounding box', function () {
 
     expect(str_ends_with(
         $path,
-        'assets' . C::DS . 'sub' . C::DS . 'portrait-200x200b.png'
+        'assets/sub/portrait-200x200b.png'
     ))->toBe(true);
     expect(is_file($path))->toBe(true);
     expect(imagesx($image->get()))->toBe(150);
@@ -145,7 +133,7 @@ test('Resize landscape to bounding box', function () {
 
     expect(str_ends_with(
         $path,
-        'assets' . C::DS . 'landscape-200x200b.png'
+        'assets/landscape-200x200b.png'
     ))->toBe(true);
     expect(is_file($path))->toBe(true);
     expect(imagesx($image->get()))->toBe(200);
@@ -167,7 +155,7 @@ test('Crop landscape into bounding box', function () {
 
     expect(str_ends_with(
         $path,
-        'assets' . C::DS . 'landscape-200x200c.png'
+        'assets/landscape-200x200c.png'
     ))->toBe(true);
     expect(is_file($path))->toBe(true);
     expect(imagesx($image->get()))->toBe(200);
@@ -189,7 +177,7 @@ test('Crop portrait into bounding box', function () {
 
     expect(str_ends_with(
         $path,
-        'assets' . C::DS . 'sub' . C::DS . 'portrait-200x200c.png'
+        'assets/sub/portrait-200x200c.png'
     ))->toBe(true);
     expect(is_file($path))->toBe(true);
     expect(imagesx($image->get()))->toBe(200);
@@ -202,7 +190,7 @@ test('Crop portrait into bounding box', function () {
 
 
 test('Recreate cached file', function () {
-    $tmpdir = sys_get_temp_dir() . C::DS . 'chuck' . (string)mt_rand();
+    $tmpdir = sys_get_temp_dir() . '/chuck' . (string)mt_rand();
     mkdir($tmpdir);
 
     $assets = new Assets($this->paths['assets'], $tmpdir);
@@ -256,59 +244,6 @@ test('Resize width too large error', function () {
     $assetImage = $assets->image($this->landscape);
     $assetImage->resize(10000, 200);
 })->throws(ValueError::class, 'not be larger than');
-
-
-test('Static route', function () {
-    $router = new Router();
-    $router->addStatic('/assets', C::root() . C::DS . 'public' . C::DS . 'assets', 'assets');
-    $assets = new Assets(
-        $this->paths['assets'],
-        $this->paths['cache'],
-        $router,
-    );
-    $image = $assets->image($this->portrait);
-
-    expect(is_file($image->path()))->toBe(true);
-    expect($image->url())->toMatch('/^\/assets\/sub\/portrait\.png\?v=[a-f0-9]{8}$/');
-    expect($image->url(bust: false))->toBe('/assets/sub/portrait.png');
-    expect($image->url(host: 'http://example.com/'))->toMatch(
-        '/^http:\/\/example\.com\/assets\/sub\/portrait\.png\?v=[a-f0-9]{8}$/'
-    );
-    expect($image->url(bust: false, host: 'http://example.com/'))->toBe(
-        'http://example.com/assets/sub/portrait.png'
-    );
-});
-
-
-test('Static cache route', function () {
-    $this->request();
-    $router = new Router();
-    $router->addStatic(
-        '/cache/assets',
-        C::root() . C::DS . 'public' . C::DS . 'cache' . C::DS . 'assets',
-        'cache'
-    );
-    $assets = new Assets(
-        $this->paths['assets'],
-        $this->paths['cache'],
-        $router
-    );
-    $image = $assets->image($this->portrait)->resize(200);
-
-    expect(is_file($image->path()))->toBe(true);
-    expect($image->url())->toMatch('/^\/cache\/assets\/sub\/portrait-w200b\.png\?v=[a-f0-9]{8}$/');
-    expect($image->url(bust: false))->toBe('/cache/assets/sub/portrait-w200b.png');
-    expect($image->url(host: 'http://example.com/'))->toMatch(
-        '/^http:\/\/example\.com\/cache\/assets\/sub\/portrait-w200b\.png\?v=[a-f0-9]{8}$/'
-    );
-    expect($image->url(bust: false, host: 'http://example.com/'))->toBe(
-        'http://example.com/cache/assets/sub/portrait-w200b.png'
-    );
-
-    $image->delete();
-
-    expect(is_file($image->path()))->toBe(false);
-});
 
 test('Image path validaton', function () {
     $assets = new Assets($this->paths['assets'], $this->paths['cache']);

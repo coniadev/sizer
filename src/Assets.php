@@ -2,23 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Conia\Sizer\Assets;
+namespace Conia\Sizer;
 
 use Conia\Sizer\Exception\RuntimeException;
-use Conia\Sizer\Routing\RouterInterface;
 
 class Assets
 {
     public readonly string $assets;
     public readonly string $cache;
 
-    public function __construct(
-        string $assetsPath,
-        string $cachePath,
-        public readonly ?RouterInterface $router = null,
-        public readonly string $staticRouteAssets = 'assets',
-        public readonly string $staticRouteCache = 'cache',
-    ) {
+    public function __construct(string $assetsPath, string $cachePath)
+    {
         $realAssetsPath = realpath($assetsPath);
         $realCachePath = realpath($cachePath);
 

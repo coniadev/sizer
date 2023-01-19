@@ -2,12 +2,7 @@
 
 declare(strict_types=1);
 
-use Conia\Sizer\Tests\Setup\C;
-use Conia\Sizer\Tests\Setup\TestCase;
 use Conia\Sizer\Util\Path;
-
-uses(TestCase::class);
-
 
 test('Path realpath', function () {
     expect(
@@ -23,13 +18,11 @@ test('Path realpath', function () {
 
 
 test('Path is inside root dir', function () {
-    $config = $this->config();
-    $pathUtil = new Path($config);
-    $ds = DIRECTORY_SEPARATOR;
+    $root = __DIR__ . '/Fixtures';
 
-    expect($pathUtil->inside(C::root(), C::root() . "{$ds}..{$ds}leprosy"))->toBe(false);
-    expect($pathUtil->inside(C::root(), C::root() . "{$ds}symbolic"))->toBe(true);
-    expect($pathUtil->inside(C::root(), C::root() . "{$ds}.{$ds}.{$ds}{$ds}.{$ds}symbolic"))->toBe(true);
-    expect($pathUtil->inside(C::root(), C::root() . "{$ds}.{$ds}..{$ds}{$ds}.{$ds}symbolic"))->toBe(false);
-    expect($pathUtil->inside(C::root(), "{$ds}etc{$ds}apache"))->toBe(false);
+    expect(Path::inside($root, $root . '/../leprosy'))->toBe(false);
+    expect(Path::inside($root, $root . '/symbolic'))->toBe(true);
+    expect(Path::inside($root, $root . '/./././symbolic'))->toBe(true);
+    expect(Path::inside($root, $root . '/./.././symbolic'))->toBe(false);
+    expect(Path::inside($root, '/etc/apache'))->toBe(false);
 });

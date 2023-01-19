@@ -5,23 +5,20 @@ declare(strict_types=1);
 use Conia\Sizer\Exception\InvalidArgumentException;
 use Conia\Sizer\Exception\RuntimeException;
 use Conia\Sizer\Exception\ValueError;
-use Conia\Sizer\Tests\Setup\C;
-use Conia\Sizer\Tests\Setup\TestCase;
 use Conia\Sizer\Util\Image;
 
-uses(TestCase::class);
-
 beforeEach(function () {
-    $this->cache = C::root() . C::DS . 'public' . C::DS . 'cache';
-    $this->landscape = C::root() . C::DS . 'public' . C::DS . 'assets' . C::DS . 'landscape.png';
-    $this->portrait = C::root() . C::DS . 'public' . C::DS . 'assets' . C::DS . 'sub' . C::DS . 'portrait.png';
-    $this->square = C::root() . C::DS . 'public' . C::DS . 'assets' . C::DS . 'square.png';
-    $this->jpeg = C::root() . C::DS . 'public' . C::DS . 'assets' . C::DS . 'image.jpg';
-    $this->webp = C::root() . C::DS . 'public' . C::DS . 'assets' . C::DS . 'image.webp';
-    $this->gif = C::root() . C::DS . 'public' . C::DS . 'static' . C::DS . 'pixel.gif';
-    $this->nonexistent = C::root() . C::DS . 'public' . C::DS . 'assets' . C::DS . 'doesnotexist.png';
-    $this->wrongext = C::root() . C::DS . 'public' . C::DS . 'assets' . C::DS . 'image.ext';
-    $this->failing = C::root() . C::DS . 'public' . C::DS . 'assets' . C::DS . 'failing.jpg';
+    $root = __DIR__ . '/Fixtures';
+    $this->cache = $root . '/cache';
+    $this->landscape = $root . '/assets/landscape.png';
+    $this->portrait = $root . '/assets/sub/portrait.png';
+    $this->square = $root . '/assets/square.png';
+    $this->jpeg = $root . '/assets/image.jpg';
+    $this->webp = $root . '/assets/image.webp';
+    $this->gif = $root . '/static/pixel.gif';
+    $this->nonexistent = $root . '/assets/doesnotexist.png';
+    $this->wrongext = $root . '/assets/image.ext';
+    $this->failing = $root . '/assets/failing.jpg';
 });
 
 
@@ -31,7 +28,7 @@ test('Failing static initialization', function () {
 
 
 test('Static create resized', function () {
-    $tmpfile = $this->cache . C::DS . 'temp.png';
+    $tmpfile = $this->cache . '/temp.png';
 
     expect(is_file($tmpfile))->toBe(false);
 
@@ -44,7 +41,7 @@ test('Static create resized', function () {
 
 
 test('Initialize PNG', function () {
-    $tmpfile = $this->cache . C::DS . 'temp.png';
+    $tmpfile = $this->cache . '/temp.png';
     $image = new Image($this->landscape);
     expect($image->get())->toBeInstanceOf(GdImage::class);
     $image->write($tmpfile);
@@ -54,7 +51,7 @@ test('Initialize PNG', function () {
 
 
 test('Initialize JPG', function () {
-    $tmpfile = $this->cache . C::DS . 'temp.jpg';
+    $tmpfile = $this->cache . '/temp.jpg';
     $image = new Image($this->jpeg);
     expect($image->get())->toBeInstanceOf(GdImage::class);
     $image->write($tmpfile);
@@ -64,7 +61,7 @@ test('Initialize JPG', function () {
 
 
 test('Initialize WEBP', function () {
-    $tmpfile = $this->cache . C::DS . 'temp.webp';
+    $tmpfile = $this->cache . '/temp.webp';
     $image = new Image($this->webp);
     expect($image->get())->toBeInstanceOf(GdImage::class);
     $image->write($tmpfile);
@@ -74,7 +71,7 @@ test('Initialize WEBP', function () {
 
 
 test('Initialize GIF', function () {
-    $tmpfile = $this->cache . C::DS . 'temp.gif';
+    $tmpfile = $this->cache . '/temp.gif';
     $image = new Image($this->gif);
     expect($image->get())->toBeInstanceOf(GdImage::class);
     $image->write($tmpfile);
@@ -91,7 +88,7 @@ test('Failing initialization', function () {
 
 test('Failing write', function () {
     $image = new Image($this->landscape);
-    $image->write($this->cache . C::DS . 'temp.ext');
+    $image->write($this->cache . '/temp.ext');
 })->throws(InvalidArgumentException::class, 'extension not supported');
 
 

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Conia\Sizer\Assets;
+namespace Conia\Sizer;
 
 use Conia\Sizer\Exception\RuntimeException;
 use Conia\Sizer\Util\Image;
