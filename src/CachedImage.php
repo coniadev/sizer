@@ -9,11 +9,6 @@ use Conia\Sizer\Util\Path;
 
 class CachedImage extends AbstractImage
 {
-    public function url(bool $bust = true, ?string $host = null): string
-    {
-        return $this->getUrl($this->assets->staticRouteCache, $bust, $host);
-    }
-
     protected function validatePath(string $path): void
     {
         if (!Path::inside($this->assets->cache, $path)) {

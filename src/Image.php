@@ -27,11 +27,6 @@ class Image extends AbstractImage
         return new CachedImage($this->assets, $cacheFile);
     }
 
-    public function url(bool $bust = true, ?string $host = null): string
-    {
-        return $this->getUrl($this->assets->staticRouteAssets, $bust, $host);
-    }
-
     protected function getRelativePath(): string
     {
         return trim(substr($this->path, strlen($this->assets->assets)), DIRECTORY_SEPARATOR);

@@ -32,8 +32,6 @@ abstract class AbstractImage
         $this->image = new Image($realPath);
     }
 
-    abstract public function url(bool $bust, ?string $host): string;
-
     public function path(): string
     {
         return $this->path;
@@ -57,20 +55,4 @@ abstract class AbstractImage
     abstract protected function getRelativePath(): string;
 
     abstract protected function validatePath(string $path): void;
-
-    protected function getUrl(string $staticRouteName, bool $bust, ?string $host): string
-    {
-        if ($this->assets->router === null) {
-            throw new RuntimeException('Assets instance initialized without router');
-        }
-
-        $router = $this->assets->router;
-
-        return $router->staticUrl(
-            $staticRouteName,
-            $this->relativePath,
-            $bust,
-            $host
-        );
-    }
 }
