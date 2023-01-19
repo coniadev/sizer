@@ -2,13 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Conia\Chuck\Assets;
+namespace Conia\Sizer\Assets;
 
-use Conia\Chuck\Exception\RuntimeException;
-use Conia\Chuck\Util\Path;
+use Conia\Sizer\Exception\RuntimeException;
+use Conia\Sizer\Util\Path;
 
 class CachedImage extends AbstractImage
 {
+    public function url(bool $bust = true, ?string $host = null): string
+    {
+        return $this->getUrl($this->assets->staticRouteCache, $bust, $host);
+    }
+
     protected function validatePath(string $path): void
     {
         if (!Path::inside($this->assets->cache, $path)) {
@@ -19,10 +24,5 @@ class CachedImage extends AbstractImage
     protected function getRelativePath(): string
     {
         return trim(substr($this->path, strlen($this->assets->cache)), DIRECTORY_SEPARATOR);
-    }
-
-    public function url(bool $bust = true, ?string $host = null): string
-    {
-        return $this->getUrl($this->assets->staticRouteCache, $bust, $host);
     }
 }

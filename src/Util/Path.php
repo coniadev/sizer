@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Conia\Chuck\Util;
+namespace Conia\Sizer\Util;
 
 class Path
 {
@@ -31,6 +31,7 @@ class Path
 
             if ($segment == '..') {
                 array_pop($out);
+
                 continue;
             }
 

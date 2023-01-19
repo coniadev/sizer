@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Conia\Chuck\Assets;
+namespace Conia\Sizer\Assets;
 
-use Conia\Chuck\Exception\RuntimeException;
-use Conia\Chuck\Routing\RouterInterface;
+use Conia\Sizer\Exception\RuntimeException;
+use Conia\Sizer\Routing\RouterInterface;
 
 class Assets
 {

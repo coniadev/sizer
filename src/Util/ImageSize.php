@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Conia\Chuck\Util;
+namespace Conia\Sizer\Util;
 
-use Conia\Chuck\Exception\ValueError;
+use Conia\Sizer\Exception\ValueError;
 
 class ImageSize
 {
@@ -34,8 +34,17 @@ class ImageSize
 
     public function alreadyInBoundingBox(): bool
     {
-        return $this->origWidth <= $this->newWidth &&
-            $this->origHeight <= $this->newHeight;
+        return $this->origWidth <= $this->newWidth
+            && $this->origHeight <= $this->newHeight;
+    }
+
+    public function newSize(bool $crop): self
+    {
+        if ($crop) {
+            return $this->cropSize();
+        }
+
+        return $this->boundingSize();
     }
 
     protected function cropSize(): self
@@ -115,14 +124,5 @@ class ImageSize
             offsetWidth: 0,
             offsetHeight: 0,
         );
-    }
-
-    public function newSize(bool $crop): self
-    {
-        if ($crop) {
-            return $this->cropSize();
-        } else {
-            return $this->boundingSize();
-        }
     }
 }

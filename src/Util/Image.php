@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Conia\Chuck\Util;
+namespace Conia\Sizer\Util;
 
+use Conia\Sizer\Exception\InvalidArgumentException;
+use Conia\Sizer\Exception\RuntimeException;
 use GdImage;
 use Throwable;
-use Conia\Chuck\Exception\InvalidArgumentException;
-use Conia\Chuck\Exception\RuntimeException;
 
 class Image
 {
@@ -36,12 +36,16 @@ class Image
                 case 'jpeg':
                 case 'jpg':
                     return imagecreatefromjpeg($path);
+
                 case 'png':
                     return imagecreatefrompng($path);
+
                 case 'gif':
                     return imagecreatefromgif($path);
+
                 case 'webp':
                     return imagecreatefromwebp($path);
+
                 default:
                     throw new InvalidArgumentException(
                         'File "' . $path . '" is not a valid jpg, webp, png or gif image.'
@@ -96,16 +100,24 @@ class Image
             case 'jpeg':
             case 'jpg':
                 imagejpeg($image, $path);
+
                 break;
+
             case 'png':
                 imagepng($image, $path);
+
                 break;
+
             case 'gif':
                 imagegif($image, $path);
+
                 break;
+
             case 'webp':
                 imagewebp($image, $path);
+
                 break;
+
             default:
                 throw new InvalidArgumentException('Image with given extension not supported: ' . $path);
         }
@@ -142,11 +154,8 @@ class Image
 
     public function get(): GdImage
     {
-        $image = self::getImageFromPath($this->path);
-
-        return $image;
+        return self::getImageFromPath($this->path);
     }
-
 
     public function write(string $path): void
     {

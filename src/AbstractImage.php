@@ -2,10 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Conia\Chuck\Assets;
+namespace Conia\Sizer\Assets;
 
-use Conia\Chuck\Exception\RuntimeException;
-use Conia\Chuck\Util\{Image, Path};
+use Conia\Sizer\Exception\RuntimeException;
+use Conia\Sizer\Util\Image;
+use Conia\Sizer\Util\Path;
 
 abstract class AbstractImage
 {
@@ -31,8 +32,6 @@ abstract class AbstractImage
         $this->image = new Image($realPath);
     }
 
-    abstract protected function getRelativePath(): string;
-    abstract protected function validatePath(string $path): void;
     abstract public function url(bool $bust, ?string $host): string;
 
     public function path(): string
@@ -55,6 +54,10 @@ abstract class AbstractImage
         return $this->image;
     }
 
+    abstract protected function getRelativePath(): string;
+
+    abstract protected function validatePath(string $path): void;
+
     protected function getUrl(string $staticRouteName, bool $bust, ?string $host): string
     {
         if ($this->assets->router === null) {
@@ -62,6 +65,7 @@ abstract class AbstractImage
         }
 
         $router = $this->assets->router;
+
         return $router->staticUrl(
             $staticRouteName,
             $this->relativePath,

@@ -2,11 +2,14 @@
 
 declare(strict_types=1);
 
-use Conia\Chuck\Assets\{Assets, Image, CachedImage};
-use Conia\Chuck\Exception\RuntimeException;
-use Conia\Chuck\Exception\ValueError;
-use Conia\Chuck\Routing\Router;
-use Conia\Chuck\Tests\Setup\{TestCase, C};
+use Conia\Sizer\Assets\Assets;
+use Conia\Sizer\Assets\CachedImage;
+use Conia\Sizer\Assets\Image;
+use Conia\Sizer\Exception\RuntimeException;
+use Conia\Sizer\Exception\ValueError;
+use Conia\Sizer\Routing\Router;
+use Conia\Sizer\Tests\Setup\C;
+use Conia\Sizer\Tests\Setup\TestCase;
 
 uses(TestCase::class);
 
@@ -17,11 +20,11 @@ beforeEach(function () {
     $cachesub = $cache . C::DS . 'sub';
 
     if (is_dir($cachesub)) {
-        array_map('unlink', glob("$cachesub/*.*"));
+        array_map('unlink', glob("{$cachesub}/*.*"));
         rmdir($cachesub);
     }
 
-    $this->paths = ['assets' => $assets, 'cache' =>  $cache];
+    $this->paths = ['assets' => $assets, 'cache' => $cache];
     $this->landscape = $assets . C::DS . 'landscape.png';
     $this->portrait = $assets . C::DS . 'sub' . C::DS . 'portrait.png';
     $this->square = $assets . C::DS . 'square.png';

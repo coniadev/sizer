@@ -2,13 +2,36 @@
 
 declare(strict_types=1);
 
-namespace Conia\Chuck\Assets;
+namespace Conia\Sizer\Assets;
 
-use Conia\Chuck\Exception\RuntimeException;
-use Conia\Chuck\Util\Path;
+use Conia\Sizer\Exception\RuntimeException;
+use Conia\Sizer\Util\Path;
 
 class Image extends AbstractImage
 {
+    public function resize(int $width = 0, int $height = 0, bool $crop = false): CachedImage
+    {
+        $cacheFile = $this->cacheFilePath($width, $height, $crop);
+
+        if (is_file($cacheFile)) {
+            $fileMtime = filemtime($this->path);
+            $cacheMtime = filemtime($cacheFile);
+
+            if ($fileMtime > $cacheMtime) {
+                $this->createCacheFile($cacheFile, $width, $height, $crop);
+            }
+        } else {
+            $this->createCacheFile($cacheFile, $width, $height, $crop);
+        }
+
+        return new CachedImage($this->assets, $cacheFile);
+    }
+
+    public function url(bool $bust = true, ?string $host = null): string
+    {
+        return $this->getUrl($this->assets->staticRouteAssets, $bust, $host);
+    }
+
     protected function getRelativePath(): string
     {
         return trim(substr($this->path, strlen($this->assets->assets)), DIRECTORY_SEPARATOR);
@@ -56,28 +79,5 @@ class Image extends AbstractImage
     protected function createCacheFile(string $cacheFile, int $width, int $height, bool $crop): void
     {
         $this->image->thumb($cacheFile, $width, $height, $crop);
-    }
-
-    public function resize(int $width = 0, int $height = 0, bool $crop = false): CachedImage
-    {
-        $cacheFile = $this->cacheFilePath($width, $height, $crop);
-
-        if (is_file($cacheFile)) {
-            $fileMtime = filemtime($this->path);
-            $cacheMtime = filemtime($cacheFile);
-
-            if ($fileMtime > $cacheMtime) {
-                $this->createCacheFile($cacheFile, $width, $height, $crop);
-            }
-        } else {
-            $this->createCacheFile($cacheFile, $width, $height, $crop);
-        }
-
-        return new CachedImage($this->assets, $cacheFile);
-    }
-
-    public function url(bool $bust = true, ?string $host = null): string
-    {
-        return $this->getUrl($this->assets->staticRouteAssets, $bust, $host);
     }
 }
