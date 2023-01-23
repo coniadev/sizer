@@ -78,21 +78,6 @@ class Image
         return self::resizeToBox($image, $size->newSize($crop));
     }
 
-    public static function createResizedImage(
-        string $path,
-        string $dest,
-        int $width = 0,
-        int $height = 0,
-        bool $crop = false,
-    ): void {
-        $image = self::getImageFromPath($path);
-
-        self::writeImageToPath(
-            self::resizeImage($image, $width, $height, $crop),
-            $dest
-        );
-    }
-
     public static function writeImageToPath(GdImage $image, string $path): void
     {
         switch (strtolower(pathinfo($path, PATHINFO_EXTENSION))) {
@@ -155,11 +140,6 @@ class Image
     public function get(): GdImage
     {
         return self::getImageFromPath($this->path);
-    }
-
-    public function write(string $path): void
-    {
-        self::writeImageToPath($this->get(), $path);
     }
 
     public function resize(

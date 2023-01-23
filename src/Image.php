@@ -7,6 +7,7 @@ namespace Conia\Sizer;
 use Conia\Sizer\Exception\RuntimeException;
 use Conia\Sizer\Util\Path;
 
+/** @psalm-api */
 class Image extends AbstractImage
 {
     public function resize(int $width = 0, int $height = 0, bool $crop = false): CachedImage

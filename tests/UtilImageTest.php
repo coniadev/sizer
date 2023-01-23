@@ -27,24 +27,11 @@ test('Failing static initialization', function () {
 })->throws(InvalidArgumentException::class, 'does not exist');
 
 
-test('Static create resized', function () {
-    $tmpfile = $this->cache . '/temp.png';
-
-    expect(is_file($tmpfile))->toBe(false);
-
-    Image::createResizedImage($this->landscape, $tmpfile, 200);
-
-    expect(is_file($tmpfile))->toBe(true);
-
-    unlink($tmpfile);
-});
-
-
 test('Initialize PNG', function () {
     $tmpfile = $this->cache . '/temp.png';
     $image = new Image($this->landscape);
     expect($image->get())->toBeInstanceOf(GdImage::class);
-    $image->write($tmpfile);
+    Image::writeImageToPath($image->get(), $tmpfile);
     expect(is_file($tmpfile))->toBe(true);
     unlink($tmpfile);
 });
@@ -54,7 +41,7 @@ test('Initialize JPG', function () {
     $tmpfile = $this->cache . '/temp.jpg';
     $image = new Image($this->jpeg);
     expect($image->get())->toBeInstanceOf(GdImage::class);
-    $image->write($tmpfile);
+    Image::writeImageToPath($image->get(), $tmpfile);
     expect(is_file($tmpfile))->toBe(true);
     unlink($tmpfile);
 });
@@ -64,7 +51,7 @@ test('Initialize WEBP', function () {
     $tmpfile = $this->cache . '/temp.webp';
     $image = new Image($this->webp);
     expect($image->get())->toBeInstanceOf(GdImage::class);
-    $image->write($tmpfile);
+    Image::writeImageToPath($image->get(), $tmpfile);
     expect(is_file($tmpfile))->toBe(true);
     unlink($tmpfile);
 });
@@ -74,7 +61,7 @@ test('Initialize GIF', function () {
     $tmpfile = $this->cache . '/temp.gif';
     $image = new Image($this->gif);
     expect($image->get())->toBeInstanceOf(GdImage::class);
-    $image->write($tmpfile);
+    Image::writeImageToPath($image->get(), $tmpfile);
     expect(is_file($tmpfile))->toBe(true);
     unlink($tmpfile);
 });
@@ -88,7 +75,7 @@ test('Failing initialization', function () {
 
 test('Failing write', function () {
     $image = new Image($this->landscape);
-    $image->write($this->cache . '/temp.ext');
+    Image::writeImageToPath($image->get(), $this->cache . '/temp.ext');
 })->throws(InvalidArgumentException::class, 'extension not supported');
 
 

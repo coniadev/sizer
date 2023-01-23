@@ -7,8 +7,8 @@ namespace Conia\Sizer;
 use Conia\Sizer\Exception\RuntimeException;
 use Conia\Sizer\Util\Image;
 use Conia\Sizer\Util\Path;
-use Throwable;
 
+/** @psalm-api */
 abstract class AbstractImage
 {
     protected string $path;

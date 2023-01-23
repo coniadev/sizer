@@ -6,6 +6,7 @@ namespace Conia\Sizer;
 
 use Conia\Sizer\Exception\RuntimeException;
 
+/** @psalm-api */
 class Assets
 {
     public readonly string $assets;

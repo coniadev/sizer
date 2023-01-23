@@ -21,6 +21,8 @@ class Path
 
         $path = strtr($path, '/', $separator);
 
+        assert(!empty($separator));
+
         $segments = explode($separator, $path);
         $out = [];
 
