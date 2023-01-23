@@ -7,6 +7,7 @@ namespace Conia\Sizer;
 use Conia\Sizer\Exception\RuntimeException;
 use Conia\Sizer\Util\Image;
 use Conia\Sizer\Util\Path;
+use Throwable;
 
 abstract class AbstractImage
 {
@@ -37,8 +38,12 @@ abstract class AbstractImage
         return $this->path;
     }
 
-    public function relative(): string
+    public function relative(bool $bust = false): string
     {
+        if ($bust) {
+            return $this->relativePath . '?v=' . $this->getCacheBuster();
+        }
+
         return $this->relativePath;
     }
 
@@ -50,6 +55,11 @@ abstract class AbstractImage
     public function get(): Image
     {
         return $this->image;
+    }
+
+    protected function getCacheBuster(): string
+    {
+        return hash('xxh32', (string)filemtime($this->path));
     }
 
     abstract protected function getRelativePath(): string;

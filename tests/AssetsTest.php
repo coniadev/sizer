@@ -51,6 +51,15 @@ test('Relative and absolute image path', function () {
 });
 
 
+test('Cachebusting', function () {
+    $assets = new Assets($this->paths['assets'], $this->paths['cache']);
+
+    $img = $assets->image($this->square);
+
+    expect($img->relative(true))->toStartWith('square.png?v=');
+});
+
+
 test('Image does not exist', function () {
     $assets = new Assets($this->paths['assets'], $this->paths['cache']);
 
