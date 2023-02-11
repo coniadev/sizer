@@ -21,11 +21,9 @@ beforeEach(function () {
     $this->failing = $root . '/assets/failing.jpg';
 });
 
-
 test('Failing static initialization', function () {
     Image::getImageFromPath($this->nonexistent);
 })->throws(InvalidArgumentException::class, 'does not exist');
-
 
 test('Initialize PNG', function () {
     $tmpfile = $this->cache . '/temp.png';
@@ -36,7 +34,6 @@ test('Initialize PNG', function () {
     unlink($tmpfile);
 });
 
-
 test('Initialize JPG', function () {
     $tmpfile = $this->cache . '/temp.jpg';
     $image = new Image($this->jpeg);
@@ -45,7 +42,6 @@ test('Initialize JPG', function () {
     expect(is_file($tmpfile))->toBe(true);
     unlink($tmpfile);
 });
-
 
 test('Initialize WEBP', function () {
     $tmpfile = $this->cache . '/temp.webp';
@@ -56,7 +52,6 @@ test('Initialize WEBP', function () {
     unlink($tmpfile);
 });
 
-
 test('Initialize GIF', function () {
     $tmpfile = $this->cache . '/temp.gif';
     $image = new Image($this->gif);
@@ -66,36 +61,30 @@ test('Initialize GIF', function () {
     unlink($tmpfile);
 });
 
-
 test('Failing initialization', function () {
     $image = new Image($this->nonexistent);
     $image->get();
 })->throws(RuntimeException::class, 'does not exist');
-
 
 test('Failing write', function () {
     $image = new Image($this->landscape);
     Image::writeImageToPath($image->get(), $this->cache . '/temp.ext');
 })->throws(InvalidArgumentException::class, 'extension not supported');
 
-
 test('Failing file extension', function () {
     $image = new Image($this->wrongext);
     $image->get();
 })->throws(InvalidArgumentException::class, 'is not a valid');
-
 
 test('Failing image', function () {
     $image = new Image($this->failing);
     $image->get();
 })->throws(InvalidArgumentException::class, 'is not a valid');
 
-
 test('Missing width/height', function () {
     $image = new Image($this->landscape);
     $image->resize();
 })->throws(ValueError::class, 'Height and/or width');
-
 
 test('Resize width, place in bounding box', function () {
     $image = new Image($this->landscape);
@@ -110,7 +99,6 @@ test('Resize width, place in bounding box', function () {
     expect($h)->toBe(150);
 });
 
-
 test('Resize height, place in bounding box', function () {
     $image = new Image($this->landscape);
     $gdImage = $image->resize(height: 300);
@@ -120,7 +108,6 @@ test('Resize height, place in bounding box', function () {
     expect($w)->toBe(400);
     expect($h)->toBe(300);
 });
-
 
 test('Resize width/height, place in bounding box', function () {
     // Landscape mode
@@ -141,7 +128,6 @@ test('Resize width/height, place in bounding box', function () {
     expect($w)->toBe(150);
     expect($h)->toBe(200);
 });
-
 
 test('Resize cropped', function () {
     $image = new Image($this->landscape);
@@ -168,7 +154,6 @@ test('Resize cropped', function () {
     expect($w)->toBe(200);
     expect($h)->toBe(200);
 });
-
 
 test('Already in bounding box', function () {
     $image = new Image($this->landscape);

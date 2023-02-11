@@ -36,16 +36,12 @@ class Image
                 case 'jpeg':
                 case 'jpg':
                     return imagecreatefromjpeg($path);
-
                 case 'png':
                     return imagecreatefrompng($path);
-
                 case 'gif':
                     return imagecreatefromgif($path);
-
                 case 'webp':
                     return imagecreatefromwebp($path);
-
                 default:
                     throw new InvalidArgumentException(
                         'File "' . $path . '" is not a valid jpg, webp, png or gif image.'
@@ -87,22 +83,20 @@ class Image
                 imagejpeg($image, $path);
 
                 break;
-
             case 'png':
+                imagealphablending($image, false);
+                imagesavealpha($image, true);
                 imagepng($image, $path);
 
                 break;
-
             case 'gif':
                 imagegif($image, $path);
 
                 break;
-
             case 'webp':
                 imagewebp($image, $path);
 
                 break;
-
             default:
                 throw new InvalidArgumentException('Image with given extension not supported: ' . $path);
         }
@@ -110,25 +104,15 @@ class Image
 
     public static function resizeToBox(GdImage $image, ImageSize $size): GdImage
     {
-        $thumb = imagecreatetruecolor($size->newWidth, $size->newHeight);
-
-        // copy source image at a resized size
-        $result = imagecopyresampled(
-            $thumb,
+        $thumb = imagescale(
             $image,
-            0,
-            0,
-            $size->offsetWidth,
-            $size->offsetHeight,
             $size->newWidth,
             $size->newHeight,
-            $size->origWidth,
-            $size->origHeight,
         );
 
         // This is here to satisfy psalm.
         // We have not yet found a way to provoke this error.
-        if ($result === false) {
+        if ($thumb === false) {
             // @codeCoverageIgnoreStart
             throw new RuntimeException('Error processing image: cannot resize');
             // @codeCoverageIgnoreEnd
