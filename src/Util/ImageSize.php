@@ -6,6 +6,9 @@ namespace Conia\Sizer\Util;
 
 use Conia\Sizer\Exception\ValueError;
 
+/**
+ * @psalm-api TODO: remove after offset fix
+ */
 class ImageSize
 {
     final public function __construct(

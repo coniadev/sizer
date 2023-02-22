@@ -27,16 +27,13 @@ beforeEach(function () {
     $this->cached = $cache . '/cached.jpg';
 });
 
-
 test('Assets directory does not exist', function () {
     new Assets('/wrong/path', $this->paths['cache']);
 })->throws(RuntimeException::class, 'does not exist');
 
-
 test('Cache directory does not exist', function () {
     new Assets($this->paths['assets'], '/wrong/path');
 })->throws(RuntimeException::class, 'does not exist');
-
 
 test('Relative and absolute image path', function () {
     $assets = new Assets($this->paths['assets'], $this->paths['cache']);
@@ -48,24 +45,22 @@ test('Relative and absolute image path', function () {
     expect($relative)->toBeInstanceOf(Image::class);
     expect($relative->path())->toBe($this->square);
     expect($absolute->relative())->toBe($this->relativeSquare);
+    expect($absolute->urlPath())->toBe($this->relativeSquare);
 });
-
 
 test('Cachebusting', function () {
     $assets = new Assets($this->paths['assets'], $this->paths['cache']);
 
     $img = $assets->image($this->square);
 
-    expect($img->relative(true))->toStartWith('square.png?v=');
+    expect($img->urlPath(true))->toStartWith('square.png?v=');
 });
-
 
 test('Image does not exist', function () {
     $assets = new Assets($this->paths['assets'], $this->paths['cache']);
 
     $assets->image('does-not-exist.jpg');
 })->throws(RuntimeException::class, 'does not exist');
-
 
 test('Resize to width', function () {
     $assets = new Assets($this->paths['assets'], $this->paths['cache']);
@@ -88,7 +83,6 @@ test('Resize to width', function () {
     expect(is_file($cacheImage->path()))->toBe(false);
 });
 
-
 test('Resize to height', function () {
     $assets = new Assets($this->paths['assets'], $this->paths['cache']);
 
@@ -108,7 +102,6 @@ test('Resize to height', function () {
 
     expect(is_file($cacheImage->path()))->toBe(false);
 });
-
 
 test('Resize portrait to bounding box', function () {
     $assets = new Assets($this->paths['assets'], $this->paths['cache']);
@@ -131,7 +124,6 @@ test('Resize portrait to bounding box', function () {
     expect(is_file($cacheImage->path()))->toBe(false);
 });
 
-
 test('Resize landscape to bounding box', function () {
     $assets = new Assets($this->paths['assets'], $this->paths['cache']);
 
@@ -152,7 +144,6 @@ test('Resize landscape to bounding box', function () {
 
     expect(is_file($cacheImage->path()))->toBe(false);
 });
-
 
 test('Crop landscape into bounding box', function () {
     $assets = new Assets($this->paths['assets'], $this->paths['cache']);
@@ -175,7 +166,6 @@ test('Crop landscape into bounding box', function () {
     expect(is_file($cacheImage->path()))->toBe(false);
 });
 
-
 test('Crop portrait into bounding box', function () {
     $assets = new Assets($this->paths['assets'], $this->paths['cache']);
 
@@ -196,7 +186,6 @@ test('Crop portrait into bounding box', function () {
 
     expect(is_file($cacheImage->path()))->toBe(false);
 });
-
 
 test('Recreate cached file', function () {
     $tmpdir = sys_get_temp_dir() . '/chuck' . (string)mt_rand();
@@ -219,13 +208,11 @@ test('Recreate cached file', function () {
     rmdir($tmpdir);
 });
 
-
 test('Resize one side 0 when cropping', function () {
     $assets = new Assets($this->paths['assets'], $this->paths['cache']);
     $assetImage = $assets->image($this->landscape);
     $assetImage->resize(200, 0, true);
 })->throws(ValueError::class, 'Image cropping error');
-
 
 test('Resize height < 0 error', function () {
     $assets = new Assets($this->paths['assets'], $this->paths['cache']);
@@ -233,20 +220,17 @@ test('Resize height < 0 error', function () {
     $assetImage->resize(200, -1);
 })->throws(ValueError::class, 'not be smaller than 0');
 
-
 test('Resize width < 0 error', function () {
     $assets = new Assets($this->paths['assets'], $this->paths['cache']);
     $assetImage = $assets->image($this->landscape);
     $assetImage->resize(-1, 200);
 })->throws(ValueError::class, 'not be smaller than 0');
 
-
 test('Resize height too large error', function () {
     $assets = new Assets($this->paths['assets'], $this->paths['cache']);
     $assetImage = $assets->image($this->landscape);
     $assetImage->resize(200, 10000);
 })->throws(ValueError::class, 'not be larger than');
-
 
 test('Resize width too large error', function () {
     $assets = new Assets($this->paths['assets'], $this->paths['cache']);

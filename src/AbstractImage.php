@@ -38,13 +38,20 @@ abstract class AbstractImage
         return $this->path;
     }
 
-    public function relative(bool $bust = false): string
+    public function relative(): string
     {
+        return $this->relativePath;
+    }
+
+    public function urlPath(bool $bust = false): string
+    {
+        $path = str_replace('\\', '/', $this->relativePath);
+
         if ($bust) {
-            return $this->relativePath . '?v=' . $this->getCacheBuster();
+            return $path . '?v=' . $this->getCacheBuster();
         }
 
-        return $this->relativePath;
+        return $path;
     }
 
     public function delete(): bool
