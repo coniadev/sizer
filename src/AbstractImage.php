@@ -20,7 +20,7 @@ abstract class AbstractImage
         if (Path::isAbsolute($path)) {
             $realPath = realpath($path);
         } else {
-            $realPath = realpath($assets->assets . DIRECTORY_SEPARATOR . $path);
+            $realPath = realpath($assets->assets . '/' . $path);
         }
 
         if ($realPath === false) {

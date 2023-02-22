@@ -18,6 +18,6 @@ class CachedImage extends AbstractImage
 
     protected function getRelativePath(): string
     {
-        return trim(substr($this->path, strlen($this->assets->cache)), DIRECTORY_SEPARATOR);
+        return trim(substr($this->path, strlen($this->assets->cache)), '\\/');
     }
 }

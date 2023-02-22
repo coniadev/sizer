@@ -11,7 +11,7 @@ class Path
         return str_starts_with(self::realpath($path), self::realpath($parent));
     }
 
-    public static function realpath(string $path, string $separator = DIRECTORY_SEPARATOR): string
+    public static function realpath(string $path, string $separator = '/'): string
     {
         $path = strtr($path, '\\', '/');
 
@@ -43,7 +43,7 @@ class Path
         return implode($separator, $out);
     }
 
-    public static function isAbsolute(string $path, string $separator = DIRECTORY_SEPARATOR): bool
+    public static function isAbsolute(string $path, string $separator = '/'): bool
     {
         return str_starts_with($path, $separator);
     }

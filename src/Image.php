@@ -30,7 +30,7 @@ class Image extends AbstractImage
 
     protected function getRelativePath(): string
     {
-        return trim(substr($this->path, strlen($this->assets->assets)), DIRECTORY_SEPARATOR);
+        return trim(substr($this->path, strlen($this->assets->assets)), '\\/');
     }
 
     protected function validatePath(string $path): void
@@ -48,7 +48,7 @@ class Image extends AbstractImage
         $cacheDir = $this->assets->cache;
 
         if (!empty($relativeDir)) {
-            $cacheDir .= DIRECTORY_SEPARATOR . $relativeDir;
+            $cacheDir .= '/' . $relativeDir;
 
             // create cache sub directory if it does not exist
             if (!is_dir($cacheDir)) {
@@ -56,7 +56,7 @@ class Image extends AbstractImage
             }
         }
 
-        $cacheFile = $cacheDir . DIRECTORY_SEPARATOR . $seg[0] . '-';
+        $cacheFile = $cacheDir . '/' . $seg[0] . '-';
 
         if ($width > 0) {
             $cacheFile .= ($height === 0) ?
